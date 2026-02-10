@@ -34,9 +34,8 @@ cloudflare-tunnel-config.yml
 
 # SQL migrations (handled separately)
 sql_migrations/
-# Note: supabase/ folder in root is excluded, but src/integrations/supabase/ is needed
-supabase/
-# But NOT src/integrations/supabase/ - that's source code!
+# Supabase config folder (root level only, not src/integrations/supabase/)
+/supabase/
 
 # IDE files
 .vscode/
