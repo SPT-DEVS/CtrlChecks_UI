@@ -11,7 +11,11 @@
 **/*.spec.ts
 **/*.spec.tsx
 test_workflows/
-model-testing/
+# Exclude model-testing config files, but keep source components
+model-testing/**/*.json
+model-testing/**/test-config.json
+# But NOT the actual component files - they're needed for the app
+# model-testing/ is now included for production
 
 # Documentation
 docs/
