@@ -1,0 +1,66 @@
+{
+  "name": "Chat Trigger - YouTube Node Test",
+  "description": "Test workflow for chat trigger with YouTube node - interacts with YouTube API",
+  "nodes": [
+    {
+      "id": "node_1",
+      "type": "custom",
+      "position": { "x": 100, "y": 100 },
+      "data": {
+        "type": "chat_trigger",
+        "label": "Chat Trigger",
+        "category": "triggers",
+        "icon": "MessageSquare",
+        "config": {
+          "triggerMode": "on_message_received"
+        }
+      }
+    },
+    {
+      "id": "node_2",
+      "type": "custom",
+      "position": { "x": 300, "y": 100 },
+      "data": {
+        "type": "youtube",
+        "label": "List Videos",
+        "category": "social_media",
+        "icon": "Youtube",
+        "config": {
+          "apiKey": "YOUR_YOUTUBE_API_KEY",
+          "accessToken": "",
+          "operation": "list_videos",
+          "channelId": "YOUR_CHANNEL_ID",
+          "maxResults": 5
+        }
+      }
+    },
+    {
+      "id": "node_3",
+      "type": "custom",
+      "position": { "x": 500, "y": 100 },
+      "data": {
+        "type": "log_output",
+        "label": "Log Videos",
+        "category": "output",
+        "icon": "FileOutput",
+        "config": {
+          "message": "YouTube videos retrieved: {{input.videos}}",
+          "level": "info"
+        }
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge_1",
+      "source": "node_1",
+      "target": "node_2"
+    },
+    {
+      "id": "edge_2",
+      "source": "node_2",
+      "target": "node_3"
+    }
+  ],
+  "viewport": { "x": 0, "y": 0, "zoom": 1 }
+}

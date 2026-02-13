@@ -1,0 +1,311 @@
+{
+  "chat_trigger_inputs": {
+    "description": "Sample input data for testing chat trigger workflows",
+    "inputs": [
+      {
+        "workflow": "chat_trigger_switch",
+        "test_cases": [
+          {
+            "name": "Help message",
+            "input": {
+              "message": "help",
+              "sessionId": "test_session_1",
+              "timestamp": "2024-01-15T10:30:00Z"
+            },
+            "expected_route": "help"
+          },
+          {
+            "name": "Order message",
+            "input": {
+              "message": "order",
+              "sessionId": "test_session_2",
+              "timestamp": "2024-01-15T10:31:00Z"
+            },
+            "expected_route": "order"
+          },
+          {
+            "name": "Support message",
+            "input": {
+              "message": "support",
+              "sessionId": "test_session_3",
+              "timestamp": "2024-01-15T10:32:00Z"
+            },
+            "expected_route": "support"
+          }
+        ]
+      },
+      {
+        "workflow": "chat_trigger_function",
+        "test_cases": [
+          {
+            "name": "Basic message",
+            "input": {
+              "message": "Hello world test",
+              "sessionId": "test_session_4",
+              "timestamp": "2024-01-15T10:33:00Z"
+            },
+            "expected_output": {
+              "originalMessage": "Hello world test",
+              "processedMessage": "HELLO WORLD TEST",
+              "wordCount": 3
+            }
+          },
+          {
+            "name": "Empty message",
+            "input": {
+              "message": "",
+              "sessionId": "test_session_5",
+              "timestamp": "2024-01-15T10:34:00Z"
+            }
+          }
+        ]
+      },
+      {
+        "workflow": "chat_trigger_merge",
+        "test_cases": [
+          {
+            "name": "Merge test",
+            "input": {
+              "message": "Test merge",
+              "sessionId": "test_session_6",
+              "timestamp": "2024-01-15T10:35:00Z"
+            },
+            "expected_output": {
+              "userName": "John",
+              "userId": "123",
+              "message": "Test merge",
+              "timestamp": "2024-01-15T10:35:00Z"
+            }
+          }
+        ]
+      },
+      {
+        "workflow": "chat_trigger_wait",
+        "test_cases": [
+          {
+            "name": "Wait test",
+            "input": {
+              "message": "Test wait",
+              "sessionId": "test_session_7",
+              "timestamp": "2024-01-15T10:36:00Z"
+            },
+            "expected_delay": 2000
+          }
+        ]
+      },
+      {
+        "workflow": "chat_trigger_limit",
+        "test_cases": [
+          {
+            "name": "Limit test",
+            "input": {
+              "message": "Test limit",
+              "sessionId": "test_session_8",
+              "timestamp": "2024-01-15T10:37:00Z"
+            },
+            "expected_output": {
+              "items": [1, 2, 3, 4, 5]
+            }
+          }
+        ]
+      },
+      {
+        "workflow": "chat_trigger_aggregate",
+        "test_cases": [
+          {
+            "name": "Aggregate sum test",
+            "input": {
+              "message": "Test aggregate",
+              "sessionId": "test_session_9",
+              "timestamp": "2024-01-15T10:38:00Z"
+            },
+            "expected_output": 70
+          }
+        ]
+      },
+      {
+        "workflow": "chat_trigger_sort",
+        "test_cases": [
+          {
+            "name": "Sort test",
+            "input": {
+              "message": "Test sort",
+              "sessionId": "test_session_10",
+              "timestamp": "2024-01-15T10:39:00Z"
+            },
+            "expected_output": {
+              "items": [
+                { "name": "Item B", "price": 10 },
+                { "name": "Item C", "price": 20 },
+                { "name": "Item A", "price": 30 }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "workflow": "chat_trigger_code",
+        "test_cases": [
+          {
+            "name": "Code processing test",
+            "input": {
+              "message": "Hello world",
+              "sessionId": "test_session_11",
+              "timestamp": "2024-01-15T10:40:00Z"
+            },
+            "expected_output": {
+              "original": "Hello world",
+              "wordCount": 2,
+              "reversed": "dlrow olleH",
+              "words": ["Hello", "world"]
+            }
+          }
+        ]
+      },
+      {
+        "workflow": "chat_trigger_function_item",
+        "test_cases": [
+          {
+            "name": "Function item test",
+            "input": {
+              "message": "Test function item",
+              "sessionId": "test_session_12",
+              "timestamp": "2024-01-15T10:41:00Z"
+            },
+            "expected_output": {
+              "items": [
+                { "id": 1, "name": "Item 1", "value": 10, "processed": true, "doubled": 20, "index": 0 },
+                { "id": 2, "name": "Item 2", "value": 20, "processed": true, "doubled": 40, "index": 1 },
+                { "id": 3, "name": "Item 3", "value": 30, "processed": true, "doubled": 60, "index": 2 }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "workflow": "chat_trigger_noop",
+        "test_cases": [
+          {
+            "name": "NoOp pass through test",
+            "input": {
+              "message": "Test noop",
+              "sessionId": "test_session_13",
+              "timestamp": "2024-01-15T10:42:00Z"
+            },
+            "expected_output": {
+              "message": "Test noop",
+              "sessionId": "test_session_13",
+              "timestamp": "2024-01-15T10:42:00Z"
+            }
+          }
+        ]
+      },
+      {
+        "workflow": "chat_trigger_whatsapp",
+        "test_cases": [
+          {
+            "name": "WhatsApp send test",
+            "input": {
+              "message": "Hello from chat!",
+              "sessionId": "test_session_14",
+              "timestamp": "2024-01-15T10:43:00Z"
+            },
+            "required_config": {
+              "phoneNumberId": "123456789012345",
+              "accessToken": "EAAG...",
+              "to": "1234567890"
+            }
+          }
+        ]
+      },
+      {
+        "workflow": "chat_trigger_instagram",
+        "test_cases": [
+          {
+            "name": "Instagram post test",
+            "input": {
+              "message": "Check out this post!",
+              "sessionId": "test_session_15",
+              "timestamp": "2024-01-15T10:44:00Z"
+            },
+            "required_config": {
+              "accessToken": "YOUR_INSTAGRAM_ACCESS_TOKEN",
+              "accountId": "17841405309211844",
+              "imageUrl": "https://example.com/image.jpg"
+            }
+          }
+        ]
+      },
+      {
+        "workflow": "chat_trigger_youtube",
+        "test_cases": [
+          {
+            "name": "YouTube list videos test",
+            "input": {
+              "message": "List my videos",
+              "sessionId": "test_session_16",
+              "timestamp": "2024-01-15T10:45:00Z"
+            },
+            "required_config": {
+              "apiKey": "YOUR_YOUTUBE_API_KEY",
+              "channelId": "UCxxxxxxxxxxxxxxxxxxxxxxxxxx"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "common_test_inputs": {
+    "description": "Common test inputs for all workflows",
+    "inputs": [
+      {
+        "name": "Basic message",
+        "input": {
+          "message": "Hello world",
+          "sessionId": "test_session_basic",
+          "timestamp": "2024-01-15T10:00:00Z"
+        }
+      },
+      {
+        "name": "Empty message",
+        "input": {
+          "message": "",
+          "sessionId": "test_session_empty",
+          "timestamp": "2024-01-15T10:00:00Z"
+        }
+      },
+      {
+        "name": "Special characters",
+        "input": {
+          "message": "Test @#$%^&*() message!",
+          "sessionId": "test_session_special",
+          "timestamp": "2024-01-15T10:00:00Z"
+        }
+      },
+      {
+        "name": "Long message",
+        "input": {
+          "message": "This is a very long message that contains many words and should test how the workflow handles longer input strings with multiple sentences and various punctuation marks.",
+          "sessionId": "test_session_long",
+          "timestamp": "2024-01-15T10:00:00Z"
+        }
+      },
+      {
+        "name": "JSON-like message",
+        "input": {
+          "message": "{\"key\": \"value\"}",
+          "sessionId": "test_session_json",
+          "timestamp": "2024-01-15T10:00:00Z"
+        }
+      },
+      {
+        "name": "Multi-line message",
+        "input": {
+          "message": "Line 1\nLine 2\nLine 3",
+          "sessionId": "test_session_multiline",
+          "timestamp": "2024-01-15T10:00:00Z"
+        }
+      }
+    ]
+  }
+}
