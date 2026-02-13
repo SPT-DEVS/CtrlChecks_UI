@@ -1,0 +1,106 @@
+{
+  "name": "Chat Trigger - Merge Node Test",
+  "description": "Test workflow for chat trigger with Merge node - combines multiple data sources",
+  "nodes": [
+    {
+      "id": "node_1",
+      "type": "custom",
+      "position": { "x": 100, "y": 100 },
+      "data": {
+        "type": "chat_trigger",
+        "label": "Chat Trigger",
+        "category": "triggers",
+        "icon": "MessageSquare",
+        "config": {
+          "triggerMode": "on_message_received"
+        }
+      }
+    },
+    {
+      "id": "node_2",
+      "type": "custom",
+      "position": { "x": 300, "y": 50 },
+      "data": {
+        "type": "set",
+        "label": "Set User Data",
+        "category": "data",
+        "icon": "Edit",
+        "config": {
+          "fields": "{\"userName\": \"John\", \"userId\": \"123\"}"
+        }
+      }
+    },
+    {
+      "id": "node_3",
+      "type": "custom",
+      "position": { "x": 300, "y": 150 },
+      "data": {
+        "type": "set",
+        "label": "Set Message Data",
+        "category": "data",
+        "icon": "Edit",
+        "config": {
+          "fields": "{\"message\": \"{{input.message}}\", \"timestamp\": \"{{$now}}\"}"
+        }
+      }
+    },
+    {
+      "id": "node_4",
+      "type": "custom",
+      "position": { "x": 500, "y": 100 },
+      "data": {
+        "type": "merge",
+        "label": "Merge Data",
+        "category": "logic",
+        "icon": "GitMerge",
+        "config": {
+          "mode": "merge",
+          "mergeKey": ""
+        }
+      }
+    },
+    {
+      "id": "node_5",
+      "type": "custom",
+      "position": { "x": 700, "y": 100 },
+      "data": {
+        "type": "log_output",
+        "label": "Log Merged",
+        "category": "output",
+        "icon": "FileOutput",
+        "config": {
+          "message": "Merged data: {{input}}",
+          "level": "info"
+        }
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge_1",
+      "source": "node_1",
+      "target": "node_2"
+    },
+    {
+      "id": "edge_2",
+      "source": "node_1",
+      "target": "node_3"
+    },
+    {
+      "id": "edge_3",
+      "source": "node_2",
+      "target": "node_4"
+    },
+    {
+      "id": "edge_4",
+      "source": "node_3",
+      "target": "node_4"
+    },
+    {
+      "id": "edge_5",
+      "source": "node_4",
+      "target": "node_5"
+    }
+  ],
+  "viewport": { "x": 0, "y": 0, "zoom": 1 }
+}

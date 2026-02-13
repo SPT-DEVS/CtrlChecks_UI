@@ -35,6 +35,32 @@ export default function ExecutionConsole({ isExpanded, onToggle }: ExecutionCons
   const [executions, setExecutions] = useState<Execution[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedExecution, setSelectedExecution] = useState<Execution | null>(null);
+  // ✅ FIX: Track if user has manually selected an execution (don't auto-select if true)
+  const [isManualSelection, setIsManualSelection] = useState(false);
+
+  // Load a specific execution with full data
+  const loadExecution = useCallback(async (executionId: string) => {
+    if (!workflowId) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('executions')
+        .select('id, status, started_at, finished_at, duration_ms, error, logs, output, input')
+        .eq('id', executionId)
+        .eq('workflow_id', workflowId)
+        .single();
+
+      if (error) {
+        console.error('Error loading execution:', error);
+        return null;
+      }
+
+      return data as Execution;
+    } catch (error) {
+      console.error('Error loading execution:', error);
+      return null;
+    }
+  }, [workflowId]);
 
   const loadExecutions = useCallback(async () => {
     if (!workflowId) return;
@@ -72,11 +98,22 @@ export default function ExecutionConsole({ isExpanded, onToggle }: ExecutionCons
       }, []);
       setExecutions(uniqueExecutions);
       if (uniqueExecutions.length > 0) {
-        // Always select the most recent execution (first in the list)
-        const mostRecent = uniqueExecutions[0];
-        // Only update if it's different or if we don't have a selection
-        if (!selectedExecution || selectedExecution.id !== mostRecent.id) {
-          setSelectedExecution(mostRecent);
+        // ✅ FIX: Only auto-select most recent if user hasn't manually selected one
+        // This prevents auto-selection from overriding user's manual selection
+        if (!isManualSelection) {
+          const mostRecent = uniqueExecutions[0];
+          // Only update if it's different or if we don't have a selection
+          if (!selectedExecution || selectedExecution.id !== mostRecent.id) {
+            setSelectedExecution(mostRecent);
+          }
+        } else {
+          // User has manually selected - update the selected execution data if it exists in the list
+          if (selectedExecution) {
+            const updatedExecution = uniqueExecutions.find(e => e.id === selectedExecution.id);
+            if (updatedExecution) {
+              setSelectedExecution(updatedExecution);
+            }
+          }
         }
       }
     } catch (error) {
@@ -86,10 +123,13 @@ export default function ExecutionConsole({ isExpanded, onToggle }: ExecutionCons
     } finally {
       setLoading(false);
     }
-  }, [workflowId, selectedExecution]);
+  }, [workflowId, selectedExecution, isManualSelection]);
 
   useEffect(() => {
     if (workflowId && isExpanded) {
+      // ✅ FIX: Reset manual selection flag when workflow changes or console is collapsed/expanded
+      // This allows auto-selection to work again for new workflows
+      setIsManualSelection(false);
       loadExecutions();
     }
   }, [workflowId, isExpanded, loadExecutions]);
@@ -100,6 +140,9 @@ export default function ExecutionConsole({ isExpanded, onToggle }: ExecutionCons
       const { executionId, workflowId: eventWorkflowId } = event.detail;
       if (eventWorkflowId === workflowId) {
         console.log('Workflow execution started, refreshing executions...', executionId);
+        // ✅ FIX: Reset manual selection when a new execution starts
+        // This allows auto-selection of the new execution
+        setIsManualSelection(false);
         // Force refresh executions immediately
         loadExecutions();
         // Poll for updates while execution is running
@@ -176,8 +219,11 @@ export default function ExecutionConsole({ isExpanded, onToggle }: ExecutionCons
             resetAllNodeStatuses();
             // Reset execution ID tracking to trigger status reset
             setLastExecutionId(null);
-            // Auto-select the new execution
-            setSelectedExecution(newExecution);
+            // ✅ FIX: Only auto-select new execution if user hasn't manually selected one
+            // This prevents new executions from overriding user's manual selection
+            if (!isManualSelection) {
+              setSelectedExecution(newExecution);
+            }
             // Force refresh to get latest logs
             setTimeout(() => loadExecutions(), 500);
             // Auto-expand console if collapsed (triggered from parent)
@@ -201,8 +247,9 @@ export default function ExecutionConsole({ isExpanded, onToggle }: ExecutionCons
               setSelectedExecution(updatedExecution);
               // Force refresh to get latest logs when current execution is updated
               setTimeout(() => loadExecutions(), 300);
-            } else if (!selectedExecutionRef.current || updatedExecution.started_at > selectedExecutionRef.current.started_at) {
-              // Auto-select if it's newer than current selection
+            } else if (!isManualSelection && (!selectedExecutionRef.current || updatedExecution.started_at > selectedExecutionRef.current.started_at)) {
+              // ✅ FIX: Only auto-select if user hasn't manually selected one
+              // Auto-select if it's newer than current selection (only if no manual selection)
               setSelectedExecution(updatedExecution);
             }
           }
@@ -404,7 +451,19 @@ export default function ExecutionConsole({ isExpanded, onToggle }: ExecutionCons
                           ? "bg-primary/10 border border-primary/20"
                           : "hover:bg-muted"
                       )}
-                      onClick={() => setSelectedExecution(exec)}
+                      onClick={async () => {
+                        // ✅ FIX: Mark as manual selection and reload full execution data
+                        setIsManualSelection(true); // Prevent auto-selection from overriding
+                        const fullExecution = await loadExecution(exec.id);
+                        if (fullExecution) {
+                          setSelectedExecution(fullExecution);
+                          // Also update it in the executions list
+                          setExecutions(prev => prev.map(e => e.id === exec.id ? fullExecution : e));
+                        } else {
+                          // Fallback to cached execution if reload fails
+                          setSelectedExecution(exec);
+                        }
+                      }}
                     >
                       <div className="flex items-center gap-2">
                         {getStatusIcon(exec.status)}

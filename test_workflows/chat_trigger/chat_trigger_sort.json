@@ -1,0 +1,84 @@
+{
+  "name": "Chat Trigger - Sort Node Test",
+  "description": "Test workflow for chat trigger with Sort node - sorts array data",
+  "nodes": [
+    {
+      "id": "node_1",
+      "type": "custom",
+      "position": { "x": 100, "y": 100 },
+      "data": {
+        "type": "chat_trigger",
+        "label": "Chat Trigger",
+        "category": "triggers",
+        "icon": "MessageSquare",
+        "config": {
+          "triggerMode": "on_message_received"
+        }
+      }
+    },
+    {
+      "id": "node_2",
+      "type": "custom",
+      "position": { "x": 300, "y": 100 },
+      "data": {
+        "type": "javascript",
+        "label": "Create Data",
+        "category": "data",
+        "icon": "Code",
+        "config": {
+          "code": "return {\n  items: [\n    {name: \"Item A\", price: 30},\n    {name: \"Item B\", price: 10},\n    {name: \"Item C\", price: 20}\n  ],\n  message: input.message\n};",
+          "timeout": 5000
+        }
+      }
+    },
+    {
+      "id": "node_3",
+      "type": "custom",
+      "position": { "x": 500, "y": 100 },
+      "data": {
+        "type": "sort",
+        "label": "Sort by Price",
+        "category": "data",
+        "icon": "ArrowUpDown",
+        "config": {
+          "field": "price",
+          "direction": "ascending",
+          "type": "number"
+        }
+      }
+    },
+    {
+      "id": "node_4",
+      "type": "custom",
+      "position": { "x": 700, "y": 100 },
+      "data": {
+        "type": "log_output",
+        "label": "Log Sorted",
+        "category": "output",
+        "icon": "FileOutput",
+        "config": {
+          "message": "Sorted items: {{input.items}}",
+          "level": "info"
+        }
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge_1",
+      "source": "node_1",
+      "target": "node_2"
+    },
+    {
+      "id": "edge_2",
+      "source": "node_2",
+      "target": "node_3"
+    },
+    {
+      "id": "edge_3",
+      "source": "node_3",
+      "target": "node_4"
+    }
+  ],
+  "viewport": { "x": 0, "y": 0, "zoom": 1 }
+}
