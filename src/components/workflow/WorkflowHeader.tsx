@@ -15,6 +15,7 @@ import { useWorkflowStore } from '@/stores/workflowStore';
 import WebhookSettings from './WebhookSettings';
 import ScheduleSettings from './ScheduleSettings';
 import ConnectionsPanel from '@/components/ConnectionsPanel';
+import { WorkflowActionButton } from '@/components/WorkflowActionButton';
 import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { workflowScheduler } from '@/lib/workflowScheduler';

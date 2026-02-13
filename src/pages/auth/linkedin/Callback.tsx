@@ -49,8 +49,8 @@ export default function LinkedInAuthCallback() {
           ? new Date(expires_at * 1000).toISOString()
           : new Date(Date.now() + 3600 * 1000).toISOString();
 
-        // Scopes we request for LinkedIn posting + basic profile/email
-        const scope = 'r_liteprofile r_emailaddress w_member_social';
+        // Scopes we request for LinkedIn OIDC + posting
+        const scope = 'openid profile email w_member_social';
 
         // Upsert into linkedin_oauth_tokens table
         const { error: dbError } = await supabase

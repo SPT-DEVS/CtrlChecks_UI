@@ -122,12 +122,17 @@ export default function LinkedInConnectionStatus({
       const redirectUrl = `${window.location.origin}/auth/linkedin/callback`;
 
       const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'linkedin',
+        // IMPORTANT: Supabase exposes two LinkedIn providers:
+        // - 'linkedin' (legacy OAuth)
+        // - 'linkedin_oidc' (OIDC)
+        // Your Supabase settings show linkedin=false and linkedin_oidc=true, so we must use linkedin_oidc.
+        provider: 'linkedin_oidc',
         options: {
           redirectTo: redirectUrl,
           queryParams: {
-            // Request minimal required scopes for posting + basic profile/email
-            scope: 'r_liteprofile r_emailaddress w_member_social',
+            // LinkedIn OIDC scopes + posting permission
+            // (LinkedIn lists: openid, profile, email, w_member_social)
+            scope: 'openid profile email w_member_social',
           },
         },
       });

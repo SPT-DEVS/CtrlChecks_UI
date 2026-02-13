@@ -4,6 +4,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { useRole } from '@/hooks/useRole';
+import { InputGuideLink } from './InputGuideLink';
 
 interface GoogleSheetsSettingsProps {
   config: Record<string, unknown>;
@@ -40,6 +41,14 @@ export default function GoogleSheetsSettings({ config, onConfigChange }: GoogleS
             <SelectItem value="update">Update</SelectItem>
           </SelectContent>
         </Select>
+        <div className="flex justify-end">
+          <InputGuideLink
+            fieldKey="operation"
+            fieldLabel="Operation"
+            fieldType="select"
+            nodeType="google_sheets"
+          />
+        </div>
       </div>
 
       {/* Spreadsheet ID */}
@@ -53,9 +62,17 @@ export default function GoogleSheetsSettings({ config, onConfigChange }: GoogleS
           onChange={(e) => updateConfig('spreadsheetId', e.target.value)}
           placeholder="1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms"
         />
-        <p className="text-xs text-muted-foreground">
-          Get this from the Google Sheets URL: /d/SPREADSHEET_ID/edit
-        </p>
+        <div className="flex items-center justify-between gap-2">
+          <p className="text-xs text-muted-foreground">
+            Get this from the Google Sheets URL: /d/SPREADSHEET_ID/edit
+          </p>
+          <InputGuideLink
+            fieldKey="spreadsheetId"
+            fieldLabel="Spreadsheet ID"
+            fieldType="text"
+            nodeType="google_sheets"
+          />
+        </div>
       </div>
 
       {/* Sheet Name */}
@@ -67,9 +84,17 @@ export default function GoogleSheetsSettings({ config, onConfigChange }: GoogleS
           onChange={(e) => updateConfig('sheetName', e.target.value)}
           placeholder="Sheet1"
         />
-        <p className="text-xs text-muted-foreground">
-          Leave empty to use the first sheet
-        </p>
+        <div className="flex items-center justify-between gap-2">
+          <p className="text-xs text-muted-foreground">
+            Leave empty to use the first sheet
+          </p>
+          <InputGuideLink
+            fieldKey="sheetName"
+            fieldLabel="Sheet Name (Tab)"
+            fieldType="text"
+            nodeType="google_sheets"
+          />
+        </div>
       </div>
 
       {/* Range */}
@@ -81,9 +106,17 @@ export default function GoogleSheetsSettings({ config, onConfigChange }: GoogleS
           onChange={(e) => updateConfig('range', e.target.value)}
           placeholder="A1:D100"
         />
-        <p className="text-xs text-muted-foreground">
-          Leave empty to read all used cells. For write/update, specify the target range.
-        </p>
+        <div className="flex items-center justify-between gap-2">
+          <p className="text-xs text-muted-foreground">
+            Leave empty to read all used cells. For write/update, specify the target range.
+          </p>
+          <InputGuideLink
+            fieldKey="range"
+            fieldLabel="Range"
+            fieldType="text"
+            nodeType="google_sheets"
+          />
+        </div>
       </div>
 
       {/* Output Format (for read operations) */}
@@ -104,6 +137,14 @@ export default function GoogleSheetsSettings({ config, onConfigChange }: GoogleS
                 <SelectItem value="text">Plain Text Table</SelectItem>
               </SelectContent>
             </Select>
+            <div className="flex justify-end">
+              <InputGuideLink
+                fieldKey="outputFormat"
+                fieldLabel="Output Format"
+                fieldType="select"
+                nodeType="google_sheets"
+              />
+            </div>
           </div>
 
           <div className="space-y-2">
@@ -120,6 +161,14 @@ export default function GoogleSheetsSettings({ config, onConfigChange }: GoogleS
                 <SelectItem value="columns">Column-wise</SelectItem>
               </SelectContent>
             </Select>
+            <div className="flex justify-end">
+              <InputGuideLink
+                fieldKey="readDirection"
+                fieldLabel="Read Direction"
+                fieldType="select"
+                nodeType="google_sheets"
+              />
+            </div>
           </div>
         </>
       )}
@@ -149,11 +198,19 @@ export default function GoogleSheetsSettings({ config, onConfigChange }: GoogleS
             rows={6}
             className="font-mono text-sm"
           />
-          <p className="text-xs text-muted-foreground">
-            {config.operation === 'append'
-              ? 'Enter values to append as new rows: [["val1", "val2"]]'
-              : 'Enter headers and values to overwrite: [["Header", "Header"], ["val1", "val2"]]'}
-          </p>
+          <div className="flex items-center justify-between gap-2">
+            <p className="text-xs text-muted-foreground">
+              {config.operation === 'append'
+                ? 'Enter values to append as new rows: [["val1", "val2"]]'
+                : 'Enter headers and values to overwrite: [["Header", "Header"], ["val1", "val2"]]'}
+            </p>
+            <InputGuideLink
+              fieldKey="data"
+              fieldLabel="Data to Write (JSON)"
+              fieldType="json"
+              nodeType="google_sheets"
+            />
+          </div>
         </div>
       )}
 
@@ -168,9 +225,17 @@ export default function GoogleSheetsSettings({ config, onConfigChange }: GoogleS
               onCheckedChange={(checked) => updateConfig('allowWrite', checked)}
             />
           </div>
-          <p className="text-xs text-muted-foreground">
-            ⚠️ Admin only: Enable write/update operations for this node
-          </p>
+          <div className="flex items-center justify-between gap-2">
+            <p className="text-xs text-muted-foreground">
+              ⚠️ Admin only: Enable write/update operations for this node
+            </p>
+            <InputGuideLink
+              fieldKey="allowWrite"
+              fieldLabel="Allow Write Access"
+              fieldType="boolean"
+              nodeType="google_sheets"
+            />
+          </div>
         </div>
       )}
     </div>

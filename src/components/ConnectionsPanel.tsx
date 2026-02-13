@@ -168,12 +168,13 @@ export default function ConnectionsPanel() {
       const redirectUrl = `${window.location.origin}/auth/linkedin/callback`;
 
       const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'linkedin',
+        // Supabase settings: linkedin=false, linkedin_oidc=true
+        provider: 'linkedin_oidc',
         options: {
           redirectTo: redirectUrl,
           queryParams: {
-            // Request minimal required scopes for posting + basic profile/email
-            scope: 'r_liteprofile r_emailaddress w_member_social',
+            // LinkedIn OIDC scopes + posting permission
+            scope: 'openid profile email w_member_social',
           },
         },
       });

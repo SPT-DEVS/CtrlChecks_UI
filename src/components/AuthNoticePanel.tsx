@@ -136,9 +136,12 @@ export function AuthNoticePanel({
       const redirectUrl = `${window.location.origin}/auth/linkedin/callback`;
 
       const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'linkedin',
+        provider: 'linkedin_oidc',
         options: {
           redirectTo: redirectUrl,
+          queryParams: {
+            scope: 'openid profile email w_member_social',
+          },
         },
       });
 

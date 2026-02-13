@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
 import { Plus, X } from 'lucide-react';
+import { InputGuideLink } from './InputGuideLink';
 
 interface FormField {
   id: string;
@@ -291,9 +292,17 @@ export default function FormNodeSettings({ config, onConfigChange }: FormNodeSet
           onChange={(e) => handleConfigFieldChange('redirectUrl', e.target.value)}
           placeholder="https://example.com/thank-you"
         />
-        <p className="text-xs text-muted-foreground">
-          Leave empty to show success message on the same page
-        </p>
+        <div className="flex items-center justify-between gap-2">
+          <p className="text-xs text-muted-foreground">
+            Leave empty to show success message on the same page
+          </p>
+          <InputGuideLink
+            fieldKey="redirectUrl"
+            fieldLabel="Redirect URL"
+            fieldType="url"
+            nodeType="form"
+          />
+        </div>
       </div>
     </div>
   );
