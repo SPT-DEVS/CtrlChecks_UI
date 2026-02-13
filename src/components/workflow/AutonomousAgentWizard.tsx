@@ -2432,104 +2432,8 @@ export function AutonomousAgentWizard() {
                     </div>
                     )}
 
-                    {/* Configuration Questions in Refining Step */}
-                    {step === 'refining' && refinement?.questions && refinement.questions.length > 0 && (
-                        <div className="scroll-mt-6">
-                            <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                            >
-                                <Card className="border-blue-500/30 shadow-lg">
-                                    <CardHeader>
-                                        <CardTitle className="text-blue-400 flex items-center gap-2">
-                                            <Settings2 className="h-5 w-5" /> Configuration Required
-                                        </CardTitle>
-                                        <CardDescription>
-                                            Please provide the following configuration values to complete the workflow setup.
-                                        </CardDescription>
-                                    </CardHeader>
-                                    <CardContent className="space-y-4">
-                                        {refinement.questions.map((q: any, index: number) => {
-                                            const questionId = q.id || `config-${index}`;
-                                            const fieldName = q.fieldName || q.name || `field_${index}`;
-                                            const questionText = q.text || q.label || q.question || `Configuration ${index + 1}`;
-                                            const currentValue = requirementValues[fieldName] || requirementValues[q.fieldName] || '';
-                                            
-                                            return (
-                                                <div key={questionId} className="space-y-2">
-                                                    <Label htmlFor={questionId} className="text-sm font-medium">
-                                                        {questionText}
-                                                        {q.required !== false && <span className="text-red-400 ml-1">*</span>}
-                                                    </Label>
-                                                    {q.type === 'textarea' || (questionText.length > 100) ? (
-                                                        <textarea
-                                                            id={questionId}
-                                                            className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                                                            placeholder={q.placeholder || `Enter ${questionText}`}
-                                                            value={currentValue}
-                                                            onChange={(e) => setRequirementValues({
-                                                                ...requirementValues,
-                                                                [fieldName]: e.target.value,
-                                                                [q.fieldName]: e.target.value,
-                                                            })}
-                                                        />
-                                                    ) : (
-                                                        <Input
-                                                            id={questionId}
-                                                            type={q.type === 'password' ? 'password' : 'text'}
-                                                            placeholder={q.placeholder || `Enter ${questionText}`}
-                                                            className="w-full"
-                                                            value={currentValue}
-                                                            onChange={(e) => setRequirementValues({
-                                                                ...requirementValues,
-                                                                [fieldName]: e.target.value,
-                                                                [q.fieldName]: e.target.value,
-                                                            })}
-                                                        />
-                                                    )}
-                                                    {q.helpText && (
-                                                        <p className="text-xs text-muted-foreground">{q.helpText}</p>
-                                                    )}
-                                                </div>
-                                            );
-                                        })}
-                                        
-                                        <div className="flex gap-3 pt-4">
-                                            <Button
-                                                onClick={async () => {
-                                                    // Validate all required questions are answered
-                                                    const allFilled = refinement.questions.every((q: any) => {
-                                                        if (q.required === false) return true;
-                                                        const fieldName = q.fieldName || q.name;
-                                                        return requirementValues[fieldName] || requirementValues[q.fieldName];
-                                                    });
-                                                    
-                                                    if (!allFilled) {
-                                                        toast({
-                                                            title: 'Missing Configuration',
-                                                            description: 'Please fill in all required configuration fields.',
-                                                            variant: 'destructive',
-                                                        });
-                                                        return;
-                                                    }
-                                                    
-                                                    // Continue building with configuration values
-                                                    await handleBuild();
-                                                }}
-                                                className="flex-1"
-                                            >
-                                                <Check className="h-4 w-4 mr-2" />
-                                                Continue Building
-                                            </Button>
-                                        </div>
-                                    </CardContent>
-                                </Card>
-                            </motion.div>
-                        </div>
-                    )}
-
-                    {/* Loading state for refining (only if no questions) */}
-                    {step === 'refining' && (!refinement?.questions || refinement.questions.length === 0) && (
+                    {/* Loading state for refining (configuration questions are now derived from the finalized graph) */}
+                    {step === 'refining' && (
                         <GlassBlurLoader 
                             text="Refining Workflow Plan..."
                             description="Processing your answers and generating the final workflow structure."
@@ -3385,6 +3289,25 @@ export function AutonomousAgentWizard() {
                                             {cognitiveTexts[cognitiveTextIndex]}
                                         </motion.div>
                                     </div>
+
+                                    {/* Compact Final Prompt Summary so users see WHAT is being built */}
+                                    {refinement && (refinement.enhancedPrompt || refinement.systemPrompt || refinement.refinedPrompt) && (
+                                        <motion.div
+                                            initial={{ opacity: 0, y: 10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ duration: 0.35 }}
+                                            className="mt-4 max-w-xl mx-auto text-left"
+                                        >
+                                            <div className="rounded-lg border border-slate-600/40 bg-slate-900/60 px-4 py-3 shadow-lg">
+                                                <p className="text-xs font-semibold text-slate-300 mb-1">
+                                                    Final analyzed prompt
+                                                </p>
+                                                <p className="text-xs sm:text-sm text-slate-300/90 leading-relaxed whitespace-pre-wrap">
+                                                    {refinement.enhancedPrompt || refinement.systemPrompt || refinement.refinedPrompt}
+                                                </p>
+                                            </div>
+                                        </motion.div>
+                                    )}
                                 </div>
 
                                 {/* Primary Action / Progress (Center) */}

@@ -115,8 +115,8 @@ export function InputGuideLink({ fieldKey, fieldLabel, fieldType, nodeType, clas
   
   // Fallback to generic guide type detection
   const guideType = detectGuideType(fieldKey, fieldLabel, fieldType);
-  const guideQuestion = nodeGuide 
-    ? `How to get ${fieldLabel}?` 
+  const guideQuestion = nodeGuide
+    ? (nodeGuide.title || `How to get ${fieldLabel}?`)
     : helpTextGuide?.title || generatedGuide?.title || getGuideQuestion(fieldKey, fieldLabel);
   
   // Determine which guide to use (priority: nodeGuide > helpTextGuide > generatedGuide)
